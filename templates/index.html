@@ -140,197 +140,232 @@
             </div>
 
             <div id="analysis" class="tab-pane fade">
-            <div class="card rounded-0">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-4">
-                    <p class="card-title"><b>Top Correlation Scores</b></p>
-                    <table id="corr_scores" class="table table-sm table-striped table-bordered text-center datatable"></table>
-                  </div>
-                  <div class="col-sm-4">
-                    <p class="card-title"><b>Demographics of Survey Respondents</b></p>
-                    <img src="static/img/demographics.png" />
-                    <p class="card-text">
-                      <ul>
-                        <li><small>Since technical industries tend to have a higher male to female ratio the majority of respondents are males.</small></li>
-                      </ul>
-                    </p>
-                  </div>
-                  <div class="col-sm-4">
-                    <p class="card-title"><b>Age Distribution of Survey Respondents</b></p>
-                    <img src="static/img/age_distribution.png" />
-                    <p class="card-text">
-                      <ul>
-                        <li><small>Most survey respondents are between their late 20s and mid 30s, ages which make up majority of the activite labour force.</small></li>
-                        <li><small>This coincides with the nature of the survey ➜ investigating mental health at a workplace.</small></li>
-                      </ul>
-                    </p>
-                  </div>
-                </div>
-                <p class="card-title"><b>Analysis Part I</b></p>
-                <div class="row">
-                  <div class="col-sm-7">
-                    <img src="static/img/work_interfere_non_effective.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>work_interfere_non_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><th>0</th><td>46</td><td>207</td></tr>
-                        <tr><th>1</th><td>2</td><td>8</td></tr>
-                        <tr><th>2</th><td>18</td><td>15</td></tr>
-                        <tr><th>3</th><td>121</td><td>40</td></tr>
-                        <tr><th>4</th><td>299</td><td>50</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col-sm-4">
-                    <img src="static/img/work_interfere_effective.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>work_interfere_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>           
-                        <tr><th>0</th><td>62</td><td>235</td></tr>
-                        <tr><th>1</th><td>22</td><td>6</td></tr>
-                        <tr><th>2</th><td>167</td><td>31</td></tr>
-                        <tr><th>3</th><td>183</td><td>35</td></tr>
-                        <tr><th>4</th><td>52</td><td>13</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>  
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div>
-                      <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span>
-                      <span class="badge badge-danger" style="background:#cc8963">1➜"Never"</span>
-                      <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span>
-                      <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span>
-                      <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span>
-                    <div>
-                    <small>Excluding individuals who have rated a <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span> in the above 2 charts:</small><br>
-                    <ul>
-                      <li><small>Majority of individuals who <u>have sought treatment</u> had rated the score of <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span> to indicate the high frequency which their work is interfered by their symptoms <u>when they lack effective treatment</u>.</small></li>
-                      <li><small>Conversely, those who <u>have sought effective mental healthcare treatment</u> tend to rate lower i.e. <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span> or <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span> on the frequency to which their work has been interfered by their symptoms.</small></li>
-                      <li><small>Hence, it is easy to infer that <mark>the extent of an individual's work interference due to the absence of effective mental care treatment</mark> plays a significant role in influencing his/her decision to seek professional mental care.</small></li>
-                    </ul>
-                  </div>
-                </div>               
-                <div class="row">
-                  <div class="col-sm-4">
-                    <img src="static/img/fam_history.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>family_history</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><th>No</th><td>75</td><td>186</td></tr>
-                        <tr><th>Unsure</th><td>114</td><td>65</td></tr>
-                        <tr><th>Yes</th><td>297</td><td>69</td></tr>
-                      </tbody>
-                    </table>
-                    </div>
-                    <div class="col-sm-4">
-                      <img src="static/img/care_options.png" />
-                      <table class="table table-sm table-striped table-bordered text-center datatable">
-                        <thead>
-                          <tr>
-                            <th>care_options</th><th>treatment_Yes</th><th>treatment_No</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr><th>No</th><td>225</td><td>244</td></tr>
-                          <tr><th>Yes</th><td>261</td><td>76</td></tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="col-sm-4">
-                      <img src="static/img/benefits.png" />
-                      <table class="table table-sm table-striped table-bordered text-center datatable">
-                        <thead>
-                          <tr>
-                            <th>benefits</th><th>treatment_Yes</th><th>treatment_No</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <tr><th>No</th><td>85</td><td>71</td></tr>
-                            <tr><th>Unsure</th><td>90</td><td>128</td></tr>
-                            <tr><th>Yes</th><td>311</td><td>122</td></tr>
-                        </tbody>
-                      </table>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-4">
-                    <ul>
-                      <li><small>Individuals who <u>have sought treatment</u> tend to belong to the group of individuals who <u>have a family history of mental illness</u>.</small></li>
-                      <li><small>Hence, this signals that <mark>awareness of mental illness</mark> does influence an individual's judgment to seek professional mental care or not.</small></li><br>
-                    </ul>
-                  </div>
-                  <div class="col-sm-8">
-                    <small>The above 2 charts are indicative of <mark>a workplace's mental healthcare resource availablility</mark> for its employees. From the survey responses, it can be observed that:</small>
-                      <ul>
-                        <li><small>Majority of individuals who <u>have sought treatment</u> tend to be working at workplaces where <u>their employer(s) knowingly include mental healthcare coverage for their staff members</u>.</small></li>
-                        <li><small>Hence, this signals that <mark>the availability and accessibility of mental healthcare resources</mark> has a decisive impact on the individual's choice to seek professional mental healthcare treatment or not possibly due to coverage of costs or/and workplace resource provision</small></li>
-                      </ul>
-                    </div>
-                  </div>
+              <div class="card rounded-0">
+                <div class="card-body">
                   <div class="row">
-                  <div class="col-sm-4">
-                    <img src="static/img/past.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>past_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><th>Maybe</th><td>124</td><td>95</td></tr>
-                        <tr><th>No</th><td>30</td><td>209</td></tr>
-                        <tr><th>Yes</th><td>332</td><td>16</td></tr>
-                      </tbody>
-                    </table>
+                    <div class="col-sm-4">
+                      <p class="card-title"><b>Top Correlation Scores</b></p>
+                      <table id="corr_scores" class="table table-sm table-striped table-bordered datatable"></table>
+                    </div>
+                    <div class="col-sm-4">
+                      <p class="card-title"><b>Demographics of Survey Respondents</b></p>
+                      <img src="static/img/demographics.png" />
+                      <p class="card-text">
+                        <ul>
+                          <li><small>Since technical industries tend to have a higher male to female ratio the majority of respondents are males</small></li>
+                        </ul>
+                      </p>
+                    </div>
+                    <div class="col-sm-4">
+                      <p class="card-title"><b>Age Distribution of Survey Respondents</b></p>
+                      <img src="static/img/age_distribution.png" />
+                      <p class="card-text">
+                        <ul>
+                          <li><small>Most survey respondents are between their late 20s and mid 30s, ages which make up majority of the active labour force</small></li>
+                          <li><small>This coincides with the nature of the survey ➜ investigating mental health at a workplace</small></li>
+                        </ul>
+                      </p>
+                    </div>
                   </div>
-                  <div class="col-sm-4">
-                    <img src="static/img/current.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>current_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><th>Maybe</th><td>105</td><td>141</td></tr>
-                        <tr><th>No</th><td>62</td><td>166</td></tr>
-                        <tr><th>Yes</th><td>319</td><td>13</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col-sm-4">
-                    <img src="static/img/diagnosed.png" />
-                    <table class="table table-sm table-striped table-bordered text-center datatable">
-                      <thead>
-                        <tr>
-                          <th>diagnosed_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><th>No</th><td>172</td><td>308</td></tr>
-                        <tr><th>Yes</th><td>314</td><td>12</td></tr>
-                      </tbody>
-                    </table>
+                  <p class="card-title"><u><b>Analysis Part I</b></u></p>
+                  <div class="row">
+                    <div class="col-sm-7">
+                      <img src="static/img/work_interfere_non_effective.png" />
+                      <table class="table table-sm table-striped table-bordered text-center datatable">
+                        <thead>
+                          <tr>
+                            <th>work_interfere_non_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><th>0</th><td>46</td><td>207</td></tr>
+                          <tr><th>1</th><td>2</td><td>8</td></tr>
+                          <tr><th>2</th><td>18</td><td>15</td></tr>
+                          <tr><th>3</th><td>121</td><td>40</td></tr>
+                          <tr><th>4</th><td>299</td><td>50</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-sm-4">
+                      <img src="static/img/work_interfere_effective.png" />
+                      <table class="table table-sm table-striped table-bordered text-center datatable">
+                        <thead>
+                          <tr>
+                            <th>work_interfere_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
+                          </tr>
+                        </thead>
+                        <tbody>           
+                          <tr><th>0</th><td>62</td><td>235</td></tr>
+                          <tr><th>1</th><td>22</td><td>6</td></tr>
+                          <tr><th>2</th><td>167</td><td>31</td></tr>
+                          <tr><th>3</th><td>183</td><td>35</td></tr>
+                          <tr><th>4</th><td>52</td><td>13</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>  
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div>
+                        <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span>
+                        <span class="badge badge-danger" style="background:#cc8963">1➜"Never"</span>
+                        <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span>
+                        <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span>
+                        <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span>
+                      <div>
+                      <small>Excluding individuals who have rated a <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span> in the above 2 charts:</small><br>
+                      <ul>
+                        <li><small>Majority of individuals who <u>have sought treatment</u> had rated the score of <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span> to indicate the high frequency which their work is interfered by their symptoms <u>when they lack effective treatment</u></small></li>
+                        <li><small>Conversely, those who <u>have sought effective mental healthcare treatment</u> tend to rate lower i.e. <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span> or <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span> on the frequency to which their work has been interfered by their symptoms</small></li>
+                        <li><small>Hence, it can be inferred that <mark>the extent of an individual's work interference due to the absence of effective mental care treatment</mark> plays a significant role in influencing his/her decision to seek professional mental care</small></li>
+                      </ul>
+                    </div>
+                  </div>  
+                  <hr>             
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="static/img/fam_history.png" />
+                      </div>
+                      <div class="col-sm-4">
+                        <img src="static/img/care_options.png" />
+                      </div>
+                      <div class="col-sm-4">
+                        <img src="static/img/workplace_coverage.png" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <ul>
+                          <li><small>Individuals who <u>have a family history of mental illness</u> have a higher frequency of seeking mental healthcare treatment</small></li>
+                          <li><small>A likely reason could be his/her <mark>awareness of mental illness</mark> which influences an individual's eventual judgment on the need to seek mental healthcare treatment</small></li><br>
+                          <table class="table table-sm table-striped table-bordered text-center datatable">
+                            <thead>
+                              <tr>
+                                <th>family_history</th><th>treatment_Yes</th><th>treatment_No</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr><th>No</th><td>75</td><td>186</td></tr>
+                              <tr><th>Unsure</th><td>114</td><td>65</td></tr>
+                              <tr><th>Yes</th><td>297</td><td>69</td></tr>
+                            </tbody>
+                          </table>
+                        </ul>
+                      </div>
+                      <div class="col-sm-8">
+                        <ul>
+                          <li><small>Most individuals who <u>have workplace mental healthcare resource provision</u> choose to <u>seek professional mental healthcare treatment</u> </small><span class="badge badge-secondary" style="background-color:#4c72b0">77.4%</span></li>
+                          <li><small>Conversely, in the </u>absence of mental healthcare provision by employer(s)</u>, there is no significant difference in the choice to seek professional mental healthcare treatment</small></li>
+                          <li><small>This observation signals that <mark>the availablility & ease of accessibility to mental healthcare resources</mark> is a push factor for an individual's choice to seek professional mental healthcare treatment</mark></small></li>
+                          <li><small>Possible reasons could be <mark>high treatment costs (lack of subsidies)</mark> or/and <mark>awareness of mental healthcare as an important issue to address</mark></small></li>
+                        </ul>
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead>
+                            <tr>
+                              <th>care_options</th><th>treatment_Yes</th><th>treatment_No</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr><th>No</th><td>225</td><td>244</td></tr>
+                            <tr><th>Yes</th><td>261</td><td>76</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-4 text-center">
+                        <img src="static/img/friends_family.png" />
+                      </div>
+                      <div class="col-sm-8">
+                        <ul>
+                          <li><small>A general trend of those who <u>seek mental healthcare treatment</u> tend to be <u>more willing to share with their Friends & Family</u> if they have a mental illness</small></li>
+                          <li><small>Potential reasons could be:<br>
+                            <ol>
+                              <li>Friends & Family play the role of <mark>raising awareness on the need for mental healthcare treatment</mark> for the individual</li>
+                              <li>Encouragement from Friends & Family could help the individual overcome <mark>any social stigma he/she is concerned about</mark> in order to seek any mental healthcare treatment he/she requires</li>
+                            </small></ol>
+                          </li>
+                        </ul>
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead><tr><th>friends_family</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></thead>
+                          <tbody>
+                            <tr><th>treatment_Yes</th><td>11</td><td>9</td><td>23</td><td>20</td><td>12</td><td>46</td><td>34</td><td>68</td><td>93</td><td>63</td><td>107</td></tr>
+                            <tr><th>treatment_No</th><td>15</td><td>10</td><td>15</td><td>25</td><td>25</td><td>57</td><td>35</td><td>53</td><td>43</td><td>19</td><td>24</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <hr>
+                    <p class="card-title"><u><b>Analysis Part II - Why individuals who may have an existing mental health condition choose to not seek professional treatment?</b></u></p>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <img src="static/img/current.png" />
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead>
+                            <tr>
+                              <th>current_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr><th>Maybe</th><td>105</td><td>141</td></tr>
+                            <tr><th>No</th><td>62</td><td>166</td></tr>
+                            <tr><th>Yes</th><td>319</td><td>13</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-sm-4">
+                        <img src="static/img/diagnosed.png" />
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead>
+                            <tr>
+                              <th>diagnosed_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr><th>No</th><td>172</td><td>308</td></tr>
+                            <tr><th>Yes</th><td>314</td><td>12</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-sm-4">
+                        <img src="static/img/past.png" />
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead>
+                            <tr>
+                              <th>past_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr><th>Maybe</th><td>124</td><td>95</td></tr>
+                            <tr><th>No</th><td>30</td><td>209</td></tr>
+                            <tr><th>Yes</th><td>332</td><td>16</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-8">
+                        <p><small><b>Note:</b> The individuals which ought to be paid more attention to are those who have possible existing yet undiagnosed mental disorder(s) (<b>disorder_status</b>=<code>possible_existing_undiagnosed_disorder</code>)</small></p>
+                        <p><small>This signifies that they have yet to go for professional treatment for a proper diagnosis despite suspecting themselves of having mental health issues </small><span class="badge badge-secondary" style="background-color:#dd8452">57.3%</span></p>
+                        <table class="table table-sm table-striped table-bordered text-center datatable">
+                          <thead><tr><th>disorder_status</th><th>treatment</th><th>no_treatment</th></tr></thead>
+                          <tbody>
+                            <tr><th class="text-left"><code>possible_existing_undiagnosed_disorder</code></th><td>105</td><td>141</td></tr>
+                            <tr><th class="text-left">no_existing_undiagnosed_disorder</th><td>62</td><td>167</td></tr>
+                            <tr><th class="text-left">existing_undiagnosed_disorder</th><td>5</td><td>1</td></tr>
+                            <tr><th class="text-left">existing_diagnosed_disorder</th><td>314</td><td>12</td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-sm-4">
+                        <img src="static/img/not_diagnosed.png" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            </div>
             </div>
           </div>
           <div id="predictive_profiling" class="tab-pane fade">
@@ -477,22 +512,19 @@
                         </label>
                       </div>
                       <hr>
-                      <b>Q8. Does the individual's employer provide mental health benefits as part of healthcare coverage?</b><br>
-                      <div class="form-check-inline">
-                        <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="benefits" checked value="2">Yes
-                        </label>
-                      </div>
-                      <div class="form-check-inline">
-                        <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="benefits" value="0">No
-                        </label>
-                      </div>
-                      <div class="form-check-inline">
-                        <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="benefits" value="1">Unsure
-                        </label>
-                      </div><br><br>
+                      <b>Q8. How willing would the individual be to share with his/her friends & family that he/she has a mental illness?</b><br>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" checked value="0">0</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="1">1</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="2">2</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="3">3</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="4">4</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="5">5</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="6">6</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="7">7</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="8">8</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="9">9</label></div>
+                      <div class="form-check-inline"><label class="form-check-label"><input type="radio" class="form-check-input" name="friends_family" value="10">10</label></div>
+                      <br><br>
                       <button type="submit" class="btn btn-sm btn-outline-dark rounded-0 float-left">Predict!</button>
                     </div>
                   </div>
@@ -506,8 +538,6 @@
       </div>  
     </div>
   </div>
-
-    
     <script type="text/javascript" src="static/js/svgxuse.js" defer></script>
     <script>
       function replaceAll(input,search,newText) {
@@ -565,7 +595,7 @@
             "family_history":allElements.family_history.value,
             "past_disorder":allElements.past_disorder.value,
             "care_options":allElements.care_options.value,
-            "benefits":allElements.benefits.value
+            "friends_family":allElements.friends_family.value
           };
           let dataResultStr=JSON.stringify(dataResult);
           $.ajax({

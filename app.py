@@ -81,6 +81,7 @@ def datetime_obj_formatter(datetime_obj,format_str): # return a datetime.datetim
 	return formatted_datetime_obj
 
 app=Flask(__name__)
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 # instantiate index page
 @app.route("/")
@@ -151,7 +152,7 @@ def query_data_last_updated():
 @app.route("/api/no_of_records/total", methods=["GET"])
 def query_total_no_of_records():
 	sqlite_connection = sqlite3.connect(db_filename)
-	cursor = sqlite_connection.execute("SELECT year, no_of_records FROM (SELECT COUNT(*) AS no_of_records, year, MAX(DATETIME(datetime_created)) AS datetime_created FROM cleaned_data GROUP BY year) AS T1 WHERE EXISTS (SELECT year FROM (SELECT DISTINCT(year) AS year FROM cleaned_data) AS T2 WHERE T1.year = T2.year) UNION ALL SELECT 'Total', SUM(no_of_records) AS total_no_of_records FROM (SELECT COUNT(*) AS no_of_records, year, MAX(DATETIME(datetime_created)) AS datetime_created FROM cleaned_data GROUP BY year) AS T1 WHERE EXISTS (SELECT year FROM (SELECT DISTINCT(year) AS year FROM cleaned_data) AS T2 WHERE T1.year = T2.year)")
+	cursor = sqlite_connection.execute("SELECT year, COUNT(*) as no_of_records FROM (SELECT * FROM cleaned_data) AS T1 WHERE EXISTS (SELECT year,latest_datetime_created FROM (SELECT year, MAX(datetime_created) AS latest_datetime_created FROM cleaned_data GROUP BY year) AS T2 WHERE T1.year = T2.year AND T1.datetime_created = T2.latest_datetime_created) GROUP BY year UNION ALL SELECT 'Total', COUNT(*) as no_of_records FROM (SELECT * FROM cleaned_data) AS T1 WHERE EXISTS (SELECT year,latest_datetime_created FROM (SELECT year, MAX(datetime_created) AS latest_datetime_created FROM cleaned_data GROUP BY year) AS T2 WHERE T1.year = T2.year AND T1.datetime_created = T2.latest_datetime_created)")
 	response=[]
 	for row in cursor:
 		year=row[0]
@@ -290,7 +291,7 @@ def create_model():
 	sqlite_connection = sqlite3.connect(db_filename)
 	input_df=pd.read_sql("SELECT * FROM (SELECT * FROM cleaned_data) AS T1 WHERE EXISTS (SELECT year,latest_datetime_created FROM (SELECT year, MAX(datetime_created) AS latest_datetime_created FROM cleaned_data GROUP BY year) AS T2 WHERE T1.year = T2.year AND T1.datetime_created = T2.latest_datetime_created)",sqlite_connection)
 	sqlite_connection.close()
-	input_df.drop(["datetime_created"],axis=1,inplace=True)
+	input_df.drop(["year","datetime_created"],axis=1,inplace=True)
 
 	all_labels_df={}
 	all_encoded_labels_df={}
@@ -480,10 +481,6 @@ def create_model():
 			scores=cross_val_score(knn, X, y, cv=10, scoring="accuracy")
 			k_scores.append(scores.mean())
 		print(k_scores)
-		plt.plot(k_range, k_scores)
-		plt.xlabel("Value of K for KNN")
-		plt.ylabel("Cross-Validated Accuracy")
-		plt.show()
 
 	def tuningGridSerach(knn):
 		k_range = list(range(1, 31))
