@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Mindful Predictions</title>
+    <link id="favicon" type="image/x-icon" rel="shortcut icon" href="static/img/favicon.ico">
+    <link rel="stylesheet" href="static/css/bootstrap-4.5.2.min.css" />
+    <script type="text/javascript" src="static/js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="static/js/popper-1.16.0.min.js"></script>
+    <script type="text/javascript" src="static/js/bootstrap-4.5.2.min.js"></script>
+    <link rel="stylesheet" href="static/css/custom.css" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div id="page-body" class="border-top-0 card rounded-0">
+        <div class="card-body">
+          <ul class="rounded-0 nav nav-pills" role="pillist">
+            <li class="rounded-0 border nav-item">
+              <a class="btn btn-sm btn-outline-primary nav-link border-0 rounded-0 active" data-toggle="pill" href="#overview"><span><svg class="icon icon-info-circle"><use xlink:href="static/symbol-defs.svg#icon-info-circle"></use></svg>&nbsp;Overview</span></a>
+            </li>
+            &nbsp;
+            <li class="rounded-0 border nav-item">
+              <a class="btn btn-sm btn-outline-primary nav-link border-0 rounded-0" data-toggle="pill" href="#data"><span><svg class="icon icon-database"><use xlink:href="static/symbol-defs.svg#icon-database"></use></svg>&nbsp;Data</span></a>
+            </li>
+            &nbsp;
+            <li class="rounded-0 border nav-item">
+              <a class="btn btn-sm btn-outline-primary nav-link border-0 rounded-0" data-toggle="pill" href="#train_model"><span><svg class="icon icon-gears"><use xlink:href="static/symbol-defs.svg#icon-gears"></use></svg>&nbsp;Train Model</span></a>
+            </li>
+            &nbsp;
+            <li class="rounded-0 border nav-item">
+              <a class="btn btn-sm btn-outline-primary nav-link border-0 rounded-0" data-toggle="pill" href="#analysis"><span><svg class="icon icon-bar-chart"><use xlink:href="static/symbol-defs.svg#icon-bar-chart"></use></svg>&nbsp;Analysis</span></a>
+            </li>
+            &nbsp;
+            <li class="rounded-0 border nav-item">
+              <a class="btn btn-sm btn-outline-primary nav-link border-0 rounded-0" data-toggle="pill" href="#predictive_profiling"><span><svg class="icon icon-research-paper"><use xlink:href="static/symbol-defs.svg#icon-research-paper"></use></svg>&nbsp;Predictive Profiling</span></a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="overview" class="tab-pane active">
+              <div class="card rounded-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <p class="card-text"><b>Summary</b>:</p>
+                      <table class="table table-sm table-striped">
+                        <tr><th>Data was last updated at</th><td id="data_last_updated"></td></tr>
+                        <tr><th>Model was last trained at</th><td id="model_last_trained"></td></tr>
+                      </table>
+                      
+                      <p class="card-text"><b>Overview of Latest Data Records</b>:</p>
+                      <table id="total_no_of_records" class="table table-sm table-striped"></table>
+
+                      <p class="card-text"><b>Data Sources</b> from <a href="https://osmihelp.org/" target="blank">Open Sourcing Mental Illness (OSMI)</a><br>
+                        <ol>
+                          <li><a href="https://www.kaggle.com/osmihelp/osmi-mental-health-in-tech-survey-2018" target="blank">OSMI Mental Health in Tech Survey 2018</a></li>
+                          <li><a href="https://www.kaggle.com/osmihelp/osmi-mental-health-in-tech-survey-2019" target="blank">OSMI Mental Health In Tech Survey 2019</a></li>
+                          <li><a href="https://www.kaggle.com/osmihelp/osmi-2020-mental-health-in-tech-survey-results" target="blank">OSMI Mental Health In Tech Survey 2020</a></li>
+                        </ol>
+                      </p>
+                    </div>
+                    <div class="col-sm-8">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                          <p class="card-text"><b>Project Name:</b> Likelihood of Seeking Mental Health Treatment</p>
+                        </li>
+                        <li class="list-group-item">
+                          <p class="card-text"><b>Project Rationale:</b> In general, having a high level of mental wellness is important on any level (individual or at a workplace) as it directly affects one's emotional state, social perceptions and work productivity. However, survey results and other media outlets have suggested that many individuals potentially in need of mental healthcare are not receiving or even seeking appropriate treatments. This leads directly to the project goals as stated below.</p>
+                        </li>
+                        <li class="list-group-item">
+                            <p class="card-text"><b>Project Goals</b>:<br>
+                              <b>Data analysis and exploration:</b>
+                              <ul>
+                                <li>To identify significant factors which influences an individual's choice to seek professional mental care treatment.</li>
+                                <li>Based on factors identified, investigate the likely hurdles which prevent individuals from seeking necessary mental care treatment.</li>
+                                <li>Constructive suggestions can then be made to tackle root cause issues to increase uptake of professional mental care treatment by individuals who may require them.</li>
+                              </ul><br> 
+                              <b>Train, Build and Deploy predictive analysis model:</b>
+                              <ul>
+                                <li>To profile an individual based on various inputs to determine likelihood of him/her to accept mental healthcare treatment from a professional based on the model's prediction results.</li>
+                              </ul>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="data" class="tab-pane fade">
+              <div class="card rounded-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <div class="dropdown">
+                        <p class="card-text">
+                          <small><b>Viewing: </b><mark id="selectedView">Latest Dataset</mark></small><br>
+                          <small><b>No. of Records:</b>&nbsp;<span id="total_records_view"></span></small><br>
+                          <small><b>Records:</b>&nbsp;<span id="start_index"></span>&nbsp;to&nbsp;<span id="end_index"></span></small><br>
+                          <hr>
+                          <div class="form-group">
+                            <label for="view"><b>Select View:</b></label>
+                            <select id="select_view" class="form-control form-control-sm custom-select-sm rounded-0">
+                              <option value="latest_dataset">Latest Dataset</option>
+                              <option value="training_logs">Training Logs</option>
+                            </select>
+                          </div>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-sm-10">
+                      <div id="pagination"></div>
+                      <div class="table-responsive">
+                        <table id="datatable" class="table table-sm table-striped table-bordered datatable"></table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="train_model" class="tab-pane fade">
+              <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" style="padding: 0.1875rem 1rem">
+                <a class="navbar-brand"><svg class="icon icon-log-file_format"><use xlink:href="static/symbol-defs.svg#icon-log-file-format"></use></svg>&nbsp;<span id="client_status"><small class="badge badge-success">Connected</small></span></a>
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                     <a class="nav-link">
+                      <button id="start_train_model" type="button" class="btn btn-sm btn-outline-warning rounded-0">
+                        <svg class="icon icon-terminal"><use xlink:href="static/symbol-defs.svg#icon-terminal"></use></svg>&nbsp;Train Model&nbsp;<small>via API</small>&nbsp;
+                      </button>
+                    </a>
+                  </li>
+                  <li class="nav-item"><a id="training_status" class="nav-link"></a></li>
+                </ul>
+              </nav>
+              <div class="card rounded-0" style="height: 499.33px">
+                <div id="training_logs" class="card-body"></div>
+              </div>
+            </div>
+
+            <div id="analysis" class="tab-pane fade">
+            <div class="card rounded-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <p class="card-title"><b>Top Correlation Scores</b></p>
+                    <table id="corr_scores" class="table table-sm table-striped table-bordered text-center datatable"></table>
+                  </div>
+                  <div class="col-sm-4">
+                    <p class="card-title"><b>Demographics of Survey Respondents</b></p>
+                    <img src="static/img/demographics.png" />
+                    <p class="card-text">
+                      <ul>
+                        <li><small>Since technical industries tend to have a higher male to female ratio the majority of respondents are males.</small></li>
+                      </ul>
+                    </p>
+                  </div>
+                  <div class="col-sm-4">
+                    <p class="card-title"><b>Age Distribution of Survey Respondents</b></p>
+                    <img src="static/img/age_distribution.png" />
+                    <p class="card-text">
+                      <ul>
+                        <li><small>Most survey respondents are between their late 20s and mid 30s, ages which make up majority of the activite labour force.</small></li>
+                        <li><small>This coincides with the nature of the survey ➜ investigating mental health at a workplace.</small></li>
+                      </ul>
+                    </p>
+                  </div>
+                </div>
+                <p class="card-title"><b>Analysis Part I</b></p>
+                <div class="row">
+                  <div class="col-sm-7">
+                    <img src="static/img/work_interfere_non_effective.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>work_interfere_non_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><th>0</th><td>46</td><td>207</td></tr>
+                        <tr><th>1</th><td>2</td><td>8</td></tr>
+                        <tr><th>2</th><td>18</td><td>15</td></tr>
+                        <tr><th>3</th><td>121</td><td>40</td></tr>
+                        <tr><th>4</th><td>299</td><td>50</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-sm-4">
+                    <img src="static/img/work_interfere_effective.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>work_interfere_effective_treatment</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>           
+                        <tr><th>0</th><td>62</td><td>235</td></tr>
+                        <tr><th>1</th><td>22</td><td>6</td></tr>
+                        <tr><th>2</th><td>167</td><td>31</td></tr>
+                        <tr><th>3</th><td>183</td><td>35</td></tr>
+                        <tr><th>4</th><td>52</td><td>13</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>  
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div>
+                      <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span>
+                      <span class="badge badge-danger" style="background:#cc8963">1➜"Never"</span>
+                      <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span>
+                      <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span>
+                      <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span>
+                    <div>
+                    <small>Excluding individuals who have rated a <span class="badge badge-danger" style="background:#5975a4">0➜"Not applicable to me"</span> in the above 2 charts:</small><br>
+                    <ul>
+                      <li><small>Majority of individuals who <u>have sought treatment</u> had rated the score of <span class="badge badge-danger" style="background:#857aab">4➜"Often"</span> to indicate the high frequency which their work is interfered by their symptoms <u>when they lack effective treatment</u>.</small></li>
+                      <li><small>Conversely, those who <u>have sought effective mental healthcare treatment</u> tend to rate lower i.e. <span class="badge badge-danger" style="background:#5f9e6e">2➜"Rarely"</span> or <span class="badge badge-danger" style="background:#b55d60">3➜"Sometimes"</span> on the frequency to which their work has been interfered by their symptoms.</small></li>
+                      <li><small>Hence, it is easy to infer that <mark>the extent of an individual's work interference due to the absence of effective mental care treatment</mark> plays a significant role in influencing his/her decision to seek professional mental care.</small></li>
+                    </ul>
+                  </div>
+                </div>               
+                <div class="row">
+                  <div class="col-sm-4">
+                    <img src="static/img/fam_history.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>family_history</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><th>No</th><td>75</td><td>186</td></tr>
+                        <tr><th>Unsure</th><td>114</td><td>65</td></tr>
+                        <tr><th>Yes</th><td>297</td><td>69</td></tr>
+                      </tbody>
+                    </table>
+                    </div>
+                    <div class="col-sm-4">
+                      <img src="static/img/care_options.png" />
+                      <table class="table table-sm table-striped table-bordered text-center datatable">
+                        <thead>
+                          <tr>
+                            <th>care_options</th><th>treatment_Yes</th><th>treatment_No</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><th>No</th><td>225</td><td>244</td></tr>
+                          <tr><th>Yes</th><td>261</td><td>76</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-sm-4">
+                      <img src="static/img/benefits.png" />
+                      <table class="table table-sm table-striped table-bordered text-center datatable">
+                        <thead>
+                          <tr>
+                            <th>benefits</th><th>treatment_Yes</th><th>treatment_No</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr><th>No</th><td>85</td><td>71</td></tr>
+                            <tr><th>Unsure</th><td>90</td><td>128</td></tr>
+                            <tr><th>Yes</th><td>311</td><td>122</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <ul>
+                      <li><small>Individuals who <u>have sought treatment</u> tend to belong to the group of individuals who <u>have a family history of mental illness</u>.</small></li>
+                      <li><small>Hence, this signals that <mark>awareness of mental illness</mark> does influence an individual's judgment to seek professional mental care or not.</small></li><br>
+                    </ul>
+                  </div>
+                  <div class="col-sm-8">
+                    <small>The above 2 charts are indicative of <mark>a workplace's mental healthcare resource availablility</mark> for its employees. From the survey responses, it can be observed that:</small>
+                      <ul>
+                        <li><small>Majority of individuals who <u>have sought treatment</u> tend to be working at workplaces where <u>their employer(s) knowingly include mental healthcare coverage for their staff members</u>.</small></li>
+                        <li><small>Hence, this signals that <mark>the availability and accessibility of mental healthcare resources</mark> has a decisive impact on the individual's choice to seek professional mental healthcare treatment or not possibly due to coverage of costs or/and workplace resource provision</small></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                  <div class="col-sm-4">
+                    <img src="static/img/past.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>past_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><th>Maybe</th><td>124</td><td>95</td></tr>
+                        <tr><th>No</th><td>30</td><td>209</td></tr>
+                        <tr><th>Yes</th><td>332</td><td>16</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-sm-4">
+                    <img src="static/img/current.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>current_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><th>Maybe</th><td>105</td><td>141</td></tr>
+                        <tr><th>No</th><td>62</td><td>166</td></tr>
+                        <tr><th>Yes</th><td>319</td><td>13</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-sm-4">
+                    <img src="static/img/diagnosed.png" />
+                    <table class="table table-sm table-striped table-bordered text-center datatable">
+                      <thead>
+                        <tr>
+                          <th>diagnosed_disorder</th><th>treatment_Yes</th><th>treatment_No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><th>No</th><td>172</td><td>308</td></tr>
+                        <tr><th>Yes</th><td>314</td><td>12</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            </div>
+          </div>
+          <div id="predictive_profiling" class="tab-pane fade">
+            <div class="card rounded-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <h4 class="card-title">Predictive Profiling</h4>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="card-text"><svg style="width:60px;height:60px;fill:#000000" class="icon icon-patient-history"><use xlink:href="static/symbol-defs.svg#icon-patient-history"></use></svg> Please proceed to fill in details of an individual <u>to gauge the likelihood that he/she would choose to seek mental healthcare treatment</u>.</p>
+                  </div>
+                </div>
+                <form id="profile_and_predict" method="POST">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <b>Q1. Assuming the individual has a mental health disorder, how often does he/she feel that it interferes with his/her work when not being treated effectively? (i.e. experience symptoms)</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_non_effective_treatment" checked value="0">Not applicable to him/her
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_non_effective_treatment" value="1">Never
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_non_effective_treatment" value="2">Rarely
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_non_effective_treatment" value="3">Sometimes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_non_effective_treatment" value="4">Often
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q2. Has the individual ever been diagnosed with a mental health disorder?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="diagnosed_disorder" checked value="1">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="diagnosed_disorder" value="0">No
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q3. Assuming the individual has a mental health disorder, how often does he/she feel that it interferes with his/her work when being treated effectively?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_effective_treatment" checked value="0">Not applicable to him/her
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_effective_treatment" value="1">Never
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_effective_treatment" value="2">Rarely
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_effective_treatment" value="3">Sometimes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="work_interfere_effective_treatment" value="4">Often
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q4. Does the individual currently have a mental health disorder?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="current_disorder" checked value="2">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="current_disorder" value="0">Maybe
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="current_disorder" value="1">No
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <b>Q5. Does the individual have a family history of mental illness?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="family_history" checked value="2">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="family_history" value="0">No
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="family_history" value="1">Unsure
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q6. Did the individual have a mental health disorder in the past?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="past_disorder" checked value="2">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="past_disorder" value="0">Maybe
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="past_disorder" value="1">No
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q7. Does the individual know of the options for mental health care available under his/her employer health coverage?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="care_options" checked value="1">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="care_options" value="0">No
+                        </label>
+                      </div>
+                      <hr>
+                      <b>Q8. Does the individual's employer provide mental health benefits as part of healthcare coverage?</b><br>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="benefits" checked value="2">Yes
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="benefits" value="0">No
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="benefits" value="1">Unsure
+                        </label>
+                      </div><br><br>
+                      <button type="submit" class="btn btn-sm btn-outline-dark rounded-0 float-left">Predict!</button>
+                    </div>
+                  </div>
+                </form>
+                <hr>
+                <div id="predictionOutcome"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+  </div>
+
+    
+    <script type="text/javascript" src="static/js/svgxuse.js" defer></script>
+    <script>
+      function replaceAll(input,search,newText) {
+        let result=input.split(search).join(newText);
+        return result;
+      }
+      function deepCopyObj(obj) {
+        let resultObj={};
+        for(let o in obj) {
+          resultObj[o]=obj[o];
+        }
+        return resultObj;
+      }
+      function json2Table(jsonObj) {
+        let htmlStr="";
+        let headers=[];
+        let headersStored=false;
+        for(var row in jsonObj) {
+          var rowJsonObj=jsonObj[row];
+          htmlStr+="<tr>";
+          for(var colname in rowJsonObj) {
+            if(!headersStored) {
+              headers.push(colname);
+            }
+            var colval=rowJsonObj[colname];
+            htmlStr+="<td>"+colval+"</td>";
+          }
+          htmlStr+="</tr>";
+          headersStored=true;
+        }
+        let headersStr="<tr>";
+        for(var h in headers) {
+          headersStr+="<th>"+headers[h]+"</th>";
+        }
+        headersStr+="</tr>";
+        let result=headersStr+htmlStr;
+        return result;
+      }
+
+      (function() {
+        $("#page-body").ready(function(ev) {
+          $("#page-body").append("<div id='pageModal' class='modal fade'><div class='modal-dialog modal-dialog-centered'><div class='modal-content'><div class='modal-header'><h4 class='modal-title'>Model training in progress</h4><button type='button' class='close' data-dismiss='modal'>&times;</button></div><div class='modal-body'>Please note that model training is currently in progress. Please do not navigate away from browser until process has been completed. This will usually take ~20 minutes.</div><div class='modal-footer'><button type='button' class='btn btn-sm btn-outline-success rounded-0' data-dismiss='modal'>OK</button></div></div></div></div>");
+        });
+
+      })();
+          
+
+      $("form#profile_and_predict").submit(function(event) {
+          let allElements=event.currentTarget.elements;
+          let dataResult={
+            "work_interfere_non_effective_treatment":allElements.work_interfere_non_effective_treatment.value,
+            "diagnosed_disorder":allElements.diagnosed_disorder.value,
+            "work_interfere_effective_treatment":allElements.work_interfere_effective_treatment.value,
+            "current_disorder":allElements.current_disorder.value,
+            "family_history":allElements.family_history.value,
+            "past_disorder":allElements.past_disorder.value,
+            "care_options":allElements.care_options.value,
+            "benefits":allElements.benefits.value
+          };
+          let dataResultStr=JSON.stringify(dataResult);
+          $.ajax({
+            url: "/api/predict",
+            data: JSON.parse(dataResultStr),
+            method: "GET",
+            success: function(result) {
+                let predictedResult=result;
+                let htmlStr="";
+                if(predictedResult=="Yes") {
+                  htmlStr+="<div class='alert alert-success alert-dismissible rounded-0'><button type='button' class='close' data-dismiss='alert'>&times;</button><strong>Yes, </strong> he/she is likely to seek mental healthcare treatment.</div>";
+                } else if(predictedResult=="No") {
+                  htmlStr+="<div class='alert alert-info alert-dismissible rounded-0'><button type='button' class='close' data-dismiss='alert'>&times;</button><strong>No, </strong> he/she is unlikely to seek mental healthcare treatment.</div>";
+                }
+                $("#predictionOutcome").html(htmlStr);
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          });
+          return false
+      });
+
+      $(document).ready(function(ev) {
+        var latest_training_timestamp = $.ajax({
+            url: "api/latest_timestamp/train_model",
+            dataType: "json",
+            type: "GET"
+        });
+
+        var latest_data_update_timestamp = $.ajax({
+            url: "api/latest_timestamp/data_updated",
+            dataType: "json",
+            type: "GET"
+        });
+
+        var latest_no_of_records = $.ajax({
+            url: "api/no_of_records/total",
+            dataType: "json",
+            type: "GET"
+        });
+       
+        var latest_training_logs = $.ajax({
+          url: "api/latest_logs",
+          dataType: "json",
+          type: "GET"
+        });
+
+        var latest_corr_scores = $.ajax({
+          url: "api/latest/corr_scores",
+          dataType: "json",
+          type: "GET"
+        });
+
+    
+        $.when(
+          latest_training_timestamp, 
+          latest_data_update_timestamp,
+          latest_no_of_records,
+          latest_training_logs,
+          latest_corr_scores
+        ).then(function(data1, data2, data3, data4,data5) {
+            //console.log("all succeeded")
+            data1=data1[0]
+            data2=data2[0]
+            data3=data3[0]
+            data4=data4[0]
+            data5=data5[0]
+
+            $("#model_last_trained").html(data1["model_last_trained"]);
+            $("#data_last_updated").html(data2["data_last_updated"]);
+
+            let htmlStr="";
+            htmlStr+="<tr><th>Year</th><th>No. of Records</th></tr>";
+            for(let r in data3) {
+              let record=data3[r];
+              let year=record["year"];
+              let no_of_records=record["no_of_records"];
+              htmlStr+="<tr><th>"+year+"</th><td>"+no_of_records+"</td></tr>";
+            }
+            $("#total_no_of_records").html(htmlStr);
+            
+            let responsejsonObj=JSON.parse(data4);
+            htmlStr=json2Table(responsejsonObj);
+            htmlStr="<h4 class='card-title'><small>Displaying Latest Training Logs</small></h4><div class='table-responsive'><table class='table table-sm table-striped table-bordered datatable'>"+htmlStr+"</table></div>";
+            $("#training_logs").html(htmlStr);
+
+            htmlStr=json2Table(data5);
+            $("#corr_scores").html(htmlStr);
+        }, function (jqXHR, textStatus, errorThrown) {
+            if (latest_training_timestamp.readyState != 4) {
+                latest_training_timestamp.abort();
+            }
+            if (latest_data_update_timestamp.readyState != 4) {
+                latest_data_update_timestamp.abort();
+            }
+            if (latest_no_of_records.readyState != 4) {
+                latest_no_of_records.abort();
+            }
+            if (latest_training_logs.readyState != 4) {
+                latest_training_logs.abort();
+            }
+            if (latest_corr_scores.readyState != 4) {
+                latest_corr_scores.abort();
+            }
+            //console.log("either or all failed")
+        });
+
+        $("#start_train_model").click(function(e) {
+          $("#start_train_model").disabled=true;
+          $("#start_train_model").html("<span class='spinner-border spinner-border-sm text-warning'>")
+          $("#training_status").html("&nbsp;<span class='spinner-grow text-muted'></span>&nbsp;<span class='spinner-grow text-muted'></span>&nbsp;<span class='spinner-grow text-muted'></span>&nbsp;");
+            
+            let modallnk = document.createElement("a");
+            modallnk.innerHTML = "Open modal";
+            modallnk.setAttribute("data-toggle","modal");
+            modallnk.setAttribute("data-target","#pageModal");
+            modallnk.style.display="none";
+            document.body.appendChild(modallnk);
+            modallnk.click();
+
+          $.ajax({
+            url: "api/train_model", 
+            method: "POST",
+            success: function(result) {
+              $("#training_status").html("");
+              result=JSON.parse(result);
+              let htmlStr=json2Table(result);
+              htmlStr="<h4 class='card-title'><small>Displaying Latest Training Logs</small></h4><div class='table-responsive'><table class='table table-sm table-striped table-bordered datatable'>"+htmlStr+"</table></div>";
+              $("#training_logs").html(htmlStr);
+              $("#start_train_model").html("<svg class='icon icon-terminal'><use xlink:href='static/symbol-defs.svg#icon-terminal'></use></svg>&nbsp;Train Model&nbsp;<small>via API</small>&nbsp;")
+              $("#start_train_model").disabled=false;
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          });
+        });
+       
+
+        var totalNoOfRecords=1;
+        var selectedPage=1;
+        var noOfPagesPerView=30;
+        var recordsPerPage=17;
+        var pageRange=[];
+        var begin;
+        begin=selectedPage;
+        var noOfPages=1;
+
+        function getRange(){
+          begin=selectedPage;
+          let ps=[];
+          if (begin > (noOfPages-noOfPagesPerView) && (noOfPages-noOfPagesPerView)>0) {
+            begin=noOfPages-noOfPagesPerView+1;
+          }
+          for (var i=begin; i<begin+noOfPagesPerView; i++) {
+            ps.push(i);
+          }
+          pageRange=ps;
+        }
+        var viewSelected="latest_dataset";
+        function renderDatatable(selectedPage,view) {
+          $.ajax({
+            url: "api/"+view, 
+            method: "GET",
+            data: {
+              "selectedPage": selectedPage,
+              "recordsPerPage": recordsPerPage
+            },
+            success: function(final_response) {
+              totalNoOfRecords=final_response["total_no_of_records"]["total_no_of_records"];
+              $("#total_records_view").html(totalNoOfRecords);
+              noOfPages=( totalNoOfRecords-(totalNoOfRecords%recordsPerPage) )/recordsPerPage;
+              
+              if(Math.ceil(noOfPages/recordsPerPage)-1 == 0) {
+                let ps=[];
+                for(let n=1;n<=noOfPages;n++) {
+                  ps.push(n);
+                }
+                pageRange=ps;
+              } else {
+                getRange();
+              }
+              
+              let result=JSON.parse(final_response["data"]);
+              let htmlStr=json2Table(result);
+              $("#datatable").html(htmlStr);
+              renderPagination(pageRange);
+              $("#start_index").html("<kbd>"+((recordsPerPage*selectedPage)-recordsPerPage)+"</kbd>");
+              $("#end_index").html("<kbd>"+recordsPerPage*selectedPage+"</kbd>");
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          });
+        }
+        function renderPagination(pageRange) {
+          let className="";
+
+          let paginationHtmlStr="";
+          paginationHtmlStr+="<ul class='pagination pagination-sm'>";
+          paginationHtmlStr+="<li class='page-item'><a class='page-link'>Prev</a></li>";
+
+          let start_n=pageRange[0];
+          let end_n=pageRange[pageRange.length-1];
+
+          for(let n=start_n;n<=end_n+1;n++) {
+            className="page-item";
+            if(n==selectedPage) {
+              className="page-item active";
+            }
+            paginationHtmlStr+="<li class='"+className+"'><a class='page-link'>"+n+"</a></li>";
+          }
+          paginationHtmlStr+="<li class='page-item'><a class='page-link'>Next</a></li>";
+          paginationHtmlStr+="</ul>";
+          $("#pagination").html(paginationHtmlStr);
+
+          $("#pagination .page-item").click(function(e) {
+            let selectedText=e.target.innerText;
+            if(selectedText == "Prev") {
+              if(selectedPage>1) {
+                selectedPage--;
+              }
+            } else if(selectedText == "Next") {
+              if(selectedPage<(noOfPages+1)) {
+                selectedPage++;
+              }
+            } else {
+              selectedPage=parseInt(selectedText);
+            }
+            renderDatatable(selectedPage,viewSelected);
+          });
+        }
+        $("#select_view").change(function(e) {
+          totalNoOfRecords=1;
+          selectedPage=1;
+          noOfPagesPerView=30;
+          recordsPerPage=17;
+          pageRange=[];
+          begin;
+          begin=selectedPage;
+          noOfPages=1;
+          viewSelected=e.target.value;
+          let displayView=e.target.selectedOptions[0].outerText;
+          $("#selectedView").html(displayView);
+          renderDatatable(selectedPage,viewSelected);
+        });
+
+        
+        renderDatatable(selectedPage,viewSelected);
+
+       
+        $(".nav-tabs a").click(function(){
+          $(this).tab("show");
+        });
+        
+
+
+      });
+
+
+    </script>
+  </body>
+</html>

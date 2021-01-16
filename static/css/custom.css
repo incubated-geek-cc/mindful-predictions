@@ -1,0 +1,83 @@
+body {
+    min-height: 480px;
+    line-height: 1.5em;
+    -webkit-font-smoothing: antialiased;
+    font-family: roboto,sans-serif;
+    font-size: 14px;
+    color: #595858;
+    visibility: visible!important;
+    background-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    overflow:hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 20px;
+    word-wrap: break-word;
+    -ms-word-wrap: break-word;
+    font-family: poppins,sans-serif;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4em;
+}
+
+#page-body {
+  height: calc(100vh - 2px);
+}
+
+.tab-content .tab-pane .card-body {
+  height:calc(100vh - 1.25rem - 40px);
+  overflow-y: auto;
+}
+
+#analysis img {
+  height:230px;
+}
+
+.datatable {
+  font-family: consolas;
+  font-size:10px;
+}
+
+.table-sm td, .table-sm th {
+  padding: 2px;
+}
+
+.pagination-sm .page-link {
+  padding: 2px 4px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+a,a:active,a:hover {
+  cursor:pointer;
+}
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 0.625rem;
+  overflow:hidden;
+}
+
+svg.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.border {
+  border: 1px solid #dee2e6!important;
+}
+
+#log {
+  font-family:monospace;
+  height: calc(100vh - 1.25rem - 40px - 62.67px);
+  overflow-x:hidden;
+  overflow-y:auto;
+}
