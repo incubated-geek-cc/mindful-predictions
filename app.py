@@ -66,8 +66,6 @@ def get_current_datetime(format_str): # returns a string
 	return timestamp
 
 def datetime_str_parser(datetime_str,format_str): # returns a datetime.datetime obj formatted:
-	# "%Y-%m-%d %H:%M:%S.%f"
-	# 2021-01-05 21:40:05.956493
 	datetime_obj=datetime.strptime(datetime_str, format_str)
 	return datetime_obj
 
