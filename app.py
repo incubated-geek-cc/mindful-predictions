@@ -113,16 +113,14 @@ def profile_and_predict():
 @app.route("/api/latest_logs", methods=["GET"])
 def query_latest_logs():
 	sqlite_connection = sqlite3.connect(db_filename)
-	cursor = sqlite_connection.execute("SELECT description, timestamp, classification_accuracy, classification_error, false_positive_rate, precision_score, auc_score, cross_validated_auc_score,time_elapsed FROM training_logs ORDER BY DATETIME(timestamp) DESC LIMIT 0,8")
+	cursor = sqlite_connection.execute("SELECT T2.`index`, T2.timestamp, T2.description, T2.classification_accuracy, T2.classification_error, T2.false_positive_rate, T2.precision_score, T2.auc_score, T2.cross_validated_auc_score, T2.time_elapsed/1000000000 FROM (SELECT timestamp AS latest_timestamp FROM training_logs ORDER BY DATETIME(timestamp) DESC LIMIT 0,7) AS T1 LEFT JOIN (SELECT * FROM training_logs) AS T2 ON T1.latest_timestamp=T2.timestamp ORDER BY `index`")
 	
 	rows=cursor.fetchall()
 	all_records=rows.copy()
-	df=pd.DataFrame(data=all_records,columns=["description", 
-		"timestamp", "classification_accuracy", "classification_error", 
-		"false_positive_rate", "precision_score", "auc_score", 
-		"cross_validated_auc_score","time_elapsed"])
+	df=pd.DataFrame(data=all_records,columns=["sn","timestamp","description", 
+		 "classification_accuracy", "classification_error","false_positive_rate",
+		 "precision_score", "auc_score","cross_validated_auc_score","time_elapsed"])
 	response=df.to_json(orient="records")
-
 	sqlite_connection.close()
 	return jsonify(response)
 
@@ -444,7 +442,7 @@ def create_model():
 
 		predict_mine=np.where(y_pred_prob > 0.50, 1, 0)
 		confusion = metrics.confusion_matrix(y_test, predict_mine)
-		confusion_df=pd.DataFrame(confusion,columns=["N","P"],index=["T","F"])
+		confusion_df=pd.DataFrame(confusion,columns=["Predicted_N","Predicted_P"],index=["Actual_N","Actual_P"])
 		print(confusion_df)
 
 		return [classification_accuracy,classification_error,false_positive_rate,precision,auc_score,cross_validated_auc_score]
@@ -644,6 +642,11 @@ def create_model():
 		last_index=(len(data_records)-1)
 		last_record=data_records[last_index]
 		last_record.extend(score_arr)
+
+
+	do_something("Train Logistic Regression Model")
+	score_arr=logisticRegression()
+	do_something_else(score_arr)
 	
 	do_something("Train KNeighbors Classifier Model")
 	score_arr=Knn()
