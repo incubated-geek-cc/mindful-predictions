@@ -1,7 +1,8 @@
 # web app packages
 import requests
-from flask import Flask, render_template, redirect, url_for, request,jsonify
-from werkzeug.wrappers import Request, Response
+from flask import Flask, render_template, redirect, session, copy_current_request_context, url_for, request, jsonify
+from flask_socketio import SocketIO, emit, disconnect
+from threading import Lock
 
 from datetime import datetime,timedelta
 import json
@@ -78,13 +79,17 @@ def datetime_obj_formatter(datetime_obj,format_str): # return a datetime.datetim
 	formatted_datetime_obj=datetime_str_parser(datetime_str,format_str)
 	return formatted_datetime_obj
 
+async_mode = None
 app=Flask(__name__)
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+socket_ = SocketIO(app, async_mode=async_mode)
+thread = None
+thread_lock = Lock()
+app.config["SEND_FILE_MAX_AGE_DEFAULT"]=0
 
 # instantiate index page
 @app.route("/")
 def index():
-   	return render_template("index.html")
+   	return render_template("index.html",async_mode=socket_.async_mode)
 
 # return model predictions
 @app.route("/api/predict", methods=["GET"])
@@ -93,7 +98,7 @@ def profile_and_predict():
 	for k in request.args.keys():
 		val=request.args.get(k)
 		msg_data[k]=val
-	f = open("output/X_test.json","r")
+	f = open("models/X_test.json","r")
 	X_test = json.load(f)
 	f.close()
 	all_cols=X_test
@@ -690,16 +695,14 @@ def create_model():
 	pickle.dump(model, open(model_filename, "wb"))
 	print(winner+" model of accuracy "+str(winner_score)+"% has been saved to "+model_filename)
 
-	with open("output/all_labels_df.json", "w") as outfile:
+	with open("models/all_labels_df.json", "w") as outfile:
 		json.dump(all_labels_df, outfile)
-	with open("output/all_encoded_labels_df.json", "w") as outfile2:
+	with open("models/all_encoded_labels_df.json", "w") as outfile2:
 		json.dump(all_encoded_labels_df, outfile2)
-	with open("output/X_test.json", "w") as outfile3:
+	with open("models/X_test.json", "w") as outfile3:
 		json.dump(list(X_test.columns), outfile3)
 
 	return jsonify(response)
 
 if __name__ == "__main_":
-	app.debug = False
-	from werkzeug.serving import run_simple
-	run_simple("localhost", 5000, app)
+	socket_.run(app, debug=True)
