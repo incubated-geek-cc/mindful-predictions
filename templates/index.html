@@ -123,7 +123,7 @@
 
             <div id="train_model" class="tab-pane fade">
               <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" style="padding: 0.1875rem 1rem">
-                <a class="navbar-brand"><svg class="icon icon-log-file_format"><use xlink:href="static/symbol-defs.svg#icon-log-file-format"></use></svg>&nbsp;<span id="client_status"><small class="badge badge-success">Connected</small></span></a>
+                <a class="navbar-brand"><svg class="icon icon-log-file_format"><use xlink:href="static/symbol-defs.svg#icon-log-file-format"></use></svg>&nbsp;<span id="client_status"></span></a>
                 <ul class="navbar-nav">
                   <li class="nav-item">
                      <a class="nav-link">
@@ -132,11 +132,30 @@
                       </button>
                     </a>
                   </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="static/models/model.pkl" download="model.pkl">
+                      <button id="download_latest_model" type="button" class="btn btn-sm btn-outline-info rounded-0">
+                        <svg class="icon icon-download"><use xlink:href="static/symbol-defs.svg#icon-download"></use></svg>&nbsp;Download Trained Model&nbsp;
+                      </button>
+                    </a>
+                  </li>
+                  <!-- <li class="nav-item">
+                   <a class="nav-link">
+                      <form id="emit">
+                        <input id="emit_data" type="text" placeholder="Send Message" />
+                        <button type="submit" class="btn btn-sm btn-outline-info rounded-0">
+                          <svg class="icon icon-terminal"><use xlink:href="static/symbol-defs.svg#icon-terminal"></use></svg>&nbsp;Train Model&nbsp;<small>via SocketIO</small>&nbsp;
+                        </button>
+                      </form>
+                    </a>
+                  </li> -->
+
                   <li class="nav-item"><a id="training_status" class="nav-link"></a></li>
                 </ul>
               </nav>
-              <div class="card rounded-0" style="height: 499.33px">
+              <div class="card rounded-0" style="height: 499.33px;overflow-x:hidden;overflow-y:auto">
                 <div id="training_logs" class="card-body"></div>
+                <!-- <div id="logs" class="card-body"></div> -->
               </div>
             </div>
 
@@ -562,48 +581,36 @@
     </div>
   </div>
     <script type="text/javascript" src="static/js/svgxuse.js" defer></script>
+    <script type="text/javascript" src="static/js/util.js"></script>
     <script>
-      function replaceAll(input,search,newText) {
-        let result=input.split(search).join(newText);
-        return result;
-      }
-      function deepCopyObj(obj) {
-        let resultObj={};
-        for(let o in obj) {
-          resultObj[o]=obj[o];
-        }
-        return resultObj;
-      }
-      function json2Table(jsonObj) {
-        let htmlStr="";
-        let headers=[];
-        let headersStored=false;
-        for(var row in jsonObj) {
-          var rowJsonObj=jsonObj[row];
-          htmlStr+="<tr>";
-          for(var colname in rowJsonObj) {
-            if(!headersStored) {
-              headers.push(colname);
-            }
-            var colval=rowJsonObj[colname];
-            htmlStr+="<td>"+colval+"</td>";
-          }
-          htmlStr+="</tr>";
-          headersStored=true;
-        }
-        let headersStr="<tr>";
-        for(var h in headers) {
-          headersStr+="<th>"+headers[h]+"</th>";
-        }
-        headersStr+="</tr>";
-        let result=headersStr+htmlStr;
-        return result;
-      }
-
       (function() {
         $("#page-body").ready(function(ev) {
           $("#page-body").append("<div id='pageModal' class='modal fade'><div class='modal-dialog modal-dialog-centered'><div class='modal-content'><div class='modal-header'><h4 class='modal-title'>Model training in progress</h4><button type='button' class='close' data-dismiss='modal'>&times;</button></div><div class='modal-body'>Please note that model training is currently in progress. Please do not navigate away from browser until process has been completed. This will usually take ~20 minutes.</div><div class='modal-footer'><button type='button' class='btn btn-sm btn-outline-success rounded-0' data-dismiss='modal'>OK</button></div></div></div></div>");
         });
+
+        // ========================== SOCKET IO ========================================
+        // const socket = io("/train_model")
+
+        // socket.on("connect", () => {
+        //   $("#client_status").html("<small class='badge badge-success'>Connected</small>")
+        // });
+
+        // socket.on("disconnect", () => {
+        //   $("#client_status").html("<small class='badge badge-danger'>Disconnected</small>")
+        // });
+
+        // socket.on("data_command_response", (msg, cb) => {
+        //   $("#logs").append("<br>Backend Response: #" + msg.count + ":" + msg.data)
+        //   if (cb){
+        //     cb()
+        //   }
+        // });
+
+        // $("form#emit").submit(function(event) {
+        //     socket.emit("backend_event", { data: $("#emit_data").val()} )
+        //     return false
+        // });
+
 
       })();
           

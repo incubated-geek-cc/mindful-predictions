@@ -49,7 +49,7 @@ import sqlite3
 db_filename="database.db"
 # for saving/loading the ML model
 import pickle
-model_filename="models/model.pkl"
+model_filename="static/models/model.pkl"
 
 # to bypass warnings in the jupyter notebook
 import warnings
@@ -86,6 +86,37 @@ thread = None
 thread_lock = Lock()
 app.config["SEND_FILE_MAX_AGE_DEFAULT"]=0
 
+
+@socket_.on("backend_event", namespace="/train_model")
+def command_received(message):
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit("data_command_response", {"data": message["data"], "count": session["receive_count"]})
+
+
+# @socket_.on("my_event", namespace="/train_model")
+# def backend_request(json):
+#     if "command" in json.keys():  
+#         if json["command"] == "files":
+#             response_json = {}
+#             response_json["status"] = "download files"
+
+#     print(json)
+#     payload_json = response_json
+#     socketio.emit("data_command_response", payload_json, callback=messageReceived)
+#     return ["received"] # will trigger the callback
+
+
+@socket_.on("disconnect_request", namespace="/train_model")
+def disconnect_request():
+    @copy_current_request_context
+    def can_disconnect():
+        disconnect()
+
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit("data_command_response", {"data": "Disconnected!", "count": session["receive_count"]}, callback=can_disconnect)
+
+# ========================== END SOCKET IO ========================================
+
 # instantiate index page
 @app.route("/")
 def index():
@@ -98,7 +129,7 @@ def profile_and_predict():
 	for k in request.args.keys():
 		val=request.args.get(k)
 		msg_data[k]=val
-	f = open("models/X_test.json","r")
+	f = open("static/models/X_test.json","r")
 	X_test = json.load(f)
 	f.close()
 	all_cols=X_test
@@ -695,11 +726,11 @@ def create_model():
 	pickle.dump(model, open(model_filename, "wb"))
 	print(winner+" model of accuracy "+str(winner_score)+"% has been saved to "+model_filename)
 
-	with open("models/all_labels_df.json", "w") as outfile:
+	with open("static/models/all_labels_df.json", "w") as outfile:
 		json.dump(all_labels_df, outfile)
-	with open("models/all_encoded_labels_df.json", "w") as outfile2:
+	with open("static/models/all_encoded_labels_df.json", "w") as outfile2:
 		json.dump(all_encoded_labels_df, outfile2)
-	with open("models/X_test.json", "w") as outfile3:
+	with open("static/models/X_test.json", "w") as outfile3:
 		json.dump(list(X_test.columns), outfile3)
 
 	return jsonify(response)
