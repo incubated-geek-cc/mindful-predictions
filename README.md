@@ -20,5 +20,5 @@ Deployed at https://mindful-predictions.herokuapp.com/
 | pip_freeze.bat | Extract used python packages into`requirements.txt` file |   |
 | pip_install_requirements.bat |   | Install all python packages in`requirements.txt` file  |
 | activate_env.bat |   | Activate virtual environment named `.env` |
-| upgrade_pip.bat |   | Upgrades pipi to its latest version available |
+| upgrade_pip.bat |   | Upgrades pip to its latest version available |
 | run_app.bat  |   | Run the web app on localhost at port 5000 for testing |
