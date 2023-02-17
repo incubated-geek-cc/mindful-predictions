@@ -20,3 +20,9 @@ Deployed at https://mindful-predictions.herokuapp.com/
 | activate_env.bat | Activate virtual environment named `.env` |
 | upgrade_pip.bat | Upgrades pip to its latest version available |
 | run_app.bat  | Run the web app on localhost at port 5000 for testing |
+
+<p>— <b>Join me on 📝 <b>Medium</b> at <a href='https://medium.com/@geek-cc' target='_blank'>~ ξ(🎀˶❛◡❛) @geek-cc</a></b></p>
+
+---
+
+#### 🌮 Please buy me a <a href='https://www.buymeacoffee.com/geekcc' target='_blank'>Taco</a>! 😋
