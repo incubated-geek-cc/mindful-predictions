@@ -53,8 +53,8 @@ model_filename="static/models/model.pkl"
 
 # to bypass warnings in the jupyter notebook
 import warnings
-from pandas.core.common import SettingWithCopyWarning
-warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
+# from pandas.core.common import SettingWithCopyWarning
+# warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 warnings.filterwarnings("ignore",category=UserWarning)
 warnings.filterwarnings("ignore",category=DeprecationWarning)
