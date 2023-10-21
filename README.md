@@ -1,6 +1,6 @@
 # Mindful Predictions
-Deployed at https://mindful-predictions.herokuapp.com/
-## Status: Work in Progress
+Deployed at https://mindful-predictions.onrender.com
+## Status: Work in Progress (WIP)
 
 ### Screenshots of ML Web App
 #### 1. Data Retrieval & Pagination
