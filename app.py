@@ -1,26 +1,24 @@
-# web app packages
-import requests
-from flask import Flask, render_template, redirect, session, copy_current_request_context, url_for, request, jsonify
-from flask_socketio import SocketIO, emit, disconnect
-from threading import Lock
-
-from datetime import datetime,timedelta
-import json
-import os
-
 # for data loading and transformation
 import numpy as np 
 import pandas as pd
-
-# for statistics output
-from scipy import stats
-from scipy.stats import randint
 
 # for data preparation and preprocessing for model
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.datasets import make_classification
-from sklearn.preprocessing import binarize, LabelEncoder, MinMaxScaler
+# from sklearn.preprocessing import binarize, LabelEncoder, MinMaxScaler
+from sklearn.preprocessing import Binarizer, LabelEncoder, MinMaxScaler
+
+from datetime import datetime,timedelta
+
+import os
+import sys
+
+import json
+
+# for statistics output
+from scipy import stats
+from scipy.stats import randint
 
 # models
 # Logistic Regression
@@ -31,18 +29,27 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.model_selection import RandomizedSearchCV
 # Bagging
-from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier
+from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier, StackingClassifier
 # KNN
 from sklearn.neighbors import KNeighborsClassifier
 # Naive Bayes
 from sklearn.naive_bayes import GaussianNB 
 # Stacking
-from mlxtend.classifier import StackingClassifier
+# from mlxtend.classifier import StackingClassifier
 
 # model evaluation and validation 
 from sklearn import metrics
 from sklearn.metrics import accuracy_score, mean_squared_error, precision_recall_curve
 from sklearn.model_selection import cross_val_score
+
+from tqdm import trange
+
+# web app packages
+import requests
+from flask import Flask, render_template, redirect, session, copy_current_request_context, url_for, request, jsonify
+from flask_socketio import SocketIO, emit, disconnect
+from threading import Lock
+
 
 # for db connection
 import sqlite3
@@ -51,15 +58,6 @@ db_filename="database.db"
 import pickle
 model_filename="static/models/model.pkl"
 
-# to bypass warnings in the jupyter notebook
-import warnings
-# from pandas.core.common import SettingWithCopyWarning
-# warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
-
-warnings.filterwarnings("ignore",category=UserWarning)
-warnings.filterwarnings("ignore",category=DeprecationWarning)
-warnings.filterwarnings("ignore",category=FutureWarning)
-warnings.filterwarnings("ignore",category=PendingDeprecationWarning)
 
 def get_current_datetime(format_str): # returns a string
 	now = datetime.now()
@@ -348,30 +346,30 @@ def create_model():
 		all_labels_df[feature]={}
 		all_encoded_labels_df[feature]={}
 		label_dict[label_key]=label_value
-	     
+		 
 	features_df_sklearn=input_df.copy()
 	df=pd.DataFrame()
 	parsed=None
 
 	for feature in features_df_sklearn:
-	    transformed_arr=list(df_sklearn[feature])
-	    original_arr=list(features_df_sklearn[feature])
-	    df=pd.DataFrame({
-	        "transformed": transformed_arr,
-	        "original": original_arr
-	    })
-	    df.drop_duplicates(keep="first",inplace=True)
-	    result=df.to_json(orient="records")
-	    parsed=json.loads(result)
-	    subdict={}
-	    encoded_subdict={}
-	    for p in parsed:
-	        transformed_p=p["transformed"]
-	        original_p=p["original"]
-	        subdict[transformed_p]=original_p
-	        encoded_subdict[original_p]=transformed_p
-	    all_labels_df[feature]=subdict
-	    all_encoded_labels_df[feature]=encoded_subdict
+		transformed_arr=list(df_sklearn[feature])
+		original_arr=list(features_df_sklearn[feature])
+		df=pd.DataFrame({
+		    "transformed": transformed_arr,
+		    "original": original_arr
+		})
+		df.drop_duplicates(keep="first",inplace=True)
+		result=df.to_json(orient="records")
+		parsed=json.loads(result)
+		subdict={}
+		encoded_subdict={}
+		for p in parsed:
+		    transformed_p=p["transformed"]
+		    original_p=p["original"]
+		    subdict[transformed_p]=original_p
+		    encoded_subdict[original_p]=transformed_p
+		all_labels_df[feature]=subdict
+		all_encoded_labels_df[feature]=encoded_subdict
 
     
 	input_df_original=df_sklearn.copy()
@@ -431,55 +429,104 @@ def create_model():
 
 
 	print("\n########### Part 3. MODEL TRAINING ###############")
-	def evalClassModel(model, y_test, y_pred_class):
-		print("Accuracy:", metrics.accuracy_score(y_test, y_pred_class))
-		print("Null accuracy:\n", y_test.value_counts())
-		print("Percentage of ones:", y_test.mean())
-		print("Percentage of zeros:",1 - y_test.mean())
-		print("True:", y_test.values[0:25])
-		print("Pred:", y_pred_class[0:25])
-
-		confusion = metrics.confusion_matrix(y_test, y_pred_class)
-		TP = confusion[1, 1]
-		TN = confusion[0, 0]
-		FP = confusion[0, 1]
-		FN = confusion[1, 0]
-
-		classification_accuracy=metrics.accuracy_score(y_test, y_pred_class)
-		classification_error=1-classification_accuracy
-		print("Classification Accuracy:", classification_accuracy)
-		print("Classification Error:", classification_error)
-
-		false_positive_rate = FP/float(TN + FP)
-		precision=metrics.precision_score(y_test, y_pred_class)
-		auc_score=metrics.roc_auc_score(y_test, y_pred_class)
-		cross_validated_auc_score=cross_val_score(model, X, y, cv=10, scoring="roc_auc").mean()
-		print("False Positive Rate:", false_positive_rate)
-		print("Precision:", precision)
-		print("AUC Score:", auc_score)
-		print("Cross-validated AUC:", cross_validated_auc_score)
-
-		print("First 10 predicted responses:\n", model.predict(X_test)[0:10])
-		print("First 10 predicted probabilities of class members:\n", model.predict_proba(X_test)[0:10])
-		model.predict_proba(X_test)[0:10, 1]
-		y_pred_prob = model.predict_proba(X_test)[:, 1]
-		y_pred_prob = y_pred_prob.reshape(-1,1)
-		y_pred_class = binarize(y_pred_prob, 0.3)[0]
-		print("First 10 predicted probabilities:\n", y_pred_prob[0:10])
-
-		roc_auc = metrics.roc_auc_score(y_test, y_pred_prob)
-		fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred_prob)
-
-		def evaluate_threshold(threshold):
-			print("Sensitivity for " + str(threshold) + " :", tpr[thresholds > threshold][-1])
-			print("Specificity for " + str(threshold) + " :", 1 - fpr[thresholds > threshold][-1])
-
-		predict_mine=np.where(y_pred_prob > 0.50, 1, 0)
-		confusion = metrics.confusion_matrix(y_test, predict_mine)
-		confusion_df=pd.DataFrame(confusion,columns=["Predicted_N","Predicted_P"],index=["Actual_N","Actual_P"])
-		print(confusion_df)
-
-		return [classification_accuracy,classification_error,false_positive_rate,precision,auc_score,cross_validated_auc_score]
+	class ModelEvaluation:
+		def __init__(self, model, y_test, y_pred_class):
+		    self.threshold = 0.3
+		    self.model = model
+		    self.y_test = y_test
+		    self.y_pred_class = y_pred_class
+		    
+		    self.confusion = []
+		    self.TP = 0
+		    self.TN = 0
+		    self.FP = 0
+		    self.FN = 0
+		    
+		    self.classification_accuracy = 0
+		    self.classification_error = 0
+		    self.false_positive_rate = 0
+		    self.precision = 0
+		    self.auc_score = 0
+		    self.cross_validated_auc_score = 0
+		    
+		    self.y_pred_prob = 0
+		    
+		    self.roc_auc = 0
+		    self.fpr = 0
+		    self.tpr = 0
+		    self.thresholds = 0        
+		    
+		def print_status(self):
+		    print("Accuracy:", metrics.accuracy_score(self.y_test, self.y_pred_class))
+		    print("Null accuracy:\n", self.y_test.value_counts())
+		    print("Percentage of ones:", self.y_test.mean())
+		    print("Percentage of zeros:",1 - self.y_test.mean())
+		    print("True:", self.y_test.values[0:25])
+		    print("Pred:", self.y_pred_class[0:25])
+		
+		def setConfusionMatrix(self):
+		    self.confusion = metrics.confusion_matrix(self.y_test, self.y_pred_class)
+		    self.TP = self.confusion[1, 1]
+		    self.TN = self.confusion[0, 0]
+		    self.FP = self.confusion[0, 1]
+		    self.FN = self.confusion[1, 0]
+		
+		def setAccuracyScores(self):
+		    self.classification_accuracy=metrics.accuracy_score(self.y_test, self.y_pred_class)
+		    self.classification_error=1-self.classification_accuracy
+		    print("Classification Accuracy:", self.classification_accuracy)
+		    print("Classification Error:", self.classification_error)
+		
+		def crossValidate(self):
+		    self.false_positive_rate = self.FP/float(self.TN + self.FP)
+		    self.precision=metrics.precision_score(self.y_test, self.y_pred_class)
+		    self.auc_score=metrics.roc_auc_score(self.y_test, self.y_pred_class)
+		    self.cross_validated_auc_score=cross_val_score(self.model, X, y, cv=10, scoring="roc_auc").mean()
+		    print("False Positive Rate:", self.false_positive_rate)
+		    print("Precision:", self.precision)
+		    print("AUC Score:", self.auc_score)
+		    print("Cross-validated AUC:", self.cross_validated_auc_score)
+		
+		def adjustClassificationThreshold(self):
+		    ##########################################
+		    # Adjusting the classification threshold
+		    ##########################################
+		    # print the first 10 predicted responses
+		    # 1D array (vector) of binary values (0, 1)
+		    print("First 10 predicted responses:\n", self.model.predict(X_test)[0:10])
+		    print("First 10 predicted probabilities of class members:\n", self.model.predict_proba(X_test)[0:10])
+		    self.model.predict_proba(X_test)[0:10, 1]
+		    self.y_pred_prob = self.model.predict_proba(X_test)[:, 1]
+		    
+		def printPredictions(self):  
+		    self.y_pred_prob = self.y_pred_prob.reshape(-1,1)
+		    transformer = Binarizer().fit(self.y_pred_prob)
+		    self.y_pred_class = transformer.transform(self.y_pred_prob, self.threshold)[0]
+		    print("First 10 predicted probabilities:\n", self.y_pred_prob[0:10])
+		
+		def setROCAUCScores(self):
+		    ##########################################
+		    # ROC Curves and Area Under the Curve (AUC)
+		    ##########################################
+		    self.roc_auc = metrics.roc_auc_score(self.y_test, self.y_pred_prob)
+		    self.fpr, self.tpr, self.thresholds = metrics.roc_curve(self.y_test, self.y_pred_prob)
+		    print("Sensitivity for " + str(self.threshold) + " :", self.tpr[self.thresholds > self.threshold][-1])
+		    print("Specificity for " + str(self.threshold) + " :", 1 - self.fpr[self.thresholds > self.threshold][-1])
+		    
+		def printPredictionStatus(self):
+		    predict_mine=np.where(self.y_pred_prob > 0.50, 1, 0)
+		    self.confusion = metrics.confusion_matrix(self.y_test, predict_mine)
+		    confusion_df=pd.DataFrame(self.confusion,columns=["Predicted_N","Predicted_P"],index=["Actual_N","Actual_P"])
+		    print(confusion_df)
+		
+		def getScoreArr(self):
+		    return [
+		        self.classification_accuracy,
+		        self.classification_error,
+		        self.false_positive_rate,
+		        self.precision,
+		        self.auc_score, 
+		        self.cross_validated_auc_score]
 
 	# initialise dict to save accuracy scores and trained models
 	method_dict = {}
@@ -496,7 +543,18 @@ def create_model():
 		logreg.fit(X_train, y_train)
 		y_pred_class = logreg.predict(X_test)
 		print("\n########### Logistic Regression ###############")
-		score_arr=evalClassModel(logreg, y_test, y_pred_class)
+		eval_logreg=ModelEvaluation(logreg, y_test, y_pred_class)
+		eval_logreg.print_status()
+		eval_logreg.setConfusionMatrix()
+		eval_logreg.setAccuracyScores()
+		eval_logreg.crossValidate()
+		eval_logreg.adjustClassificationThreshold()
+		eval_logreg.printPredictions()
+		eval_logreg.setROCAUCScores()
+		eval_logreg.printPredictionStatus()  
+		score_arr=eval_logreg.getScoreArr()
+		print("-- ModelEvaluation (Logreg) -- ")
+		# score_arr=evalClassModel(logreg, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["Log. Regres."] = accuracy_score * 100
 		rmse_dict["Log. Regres."]=logreg
@@ -566,7 +624,18 @@ def create_model():
 		knn.fit(X_train, y_train)
 		y_pred_class = knn.predict(X_test)
 		print("\n########### KNeighborsClassifier ###############")
-		score_arr = evalClassModel(knn, y_test, y_pred_class)
+		eval_knn=ModelEvaluation(knn, y_test, y_pred_class)
+		eval_knn.print_status()
+		eval_knn.setConfusionMatrix()
+		eval_knn.setAccuracyScores()
+		eval_knn.crossValidate()
+		eval_knn.adjustClassificationThreshold()
+		eval_knn.printPredictions()
+		eval_knn.setROCAUCScores()
+		eval_knn.printPredictionStatus()  
+		score_arr=eval_knn.getScoreArr()
+		print("-- ModelEvaluation (KNN) -- ")
+		# score_arr = evalClassModel(knn, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["KNN"] = accuracy_score * 100
 		rmse_dict["KNN"]=knn
@@ -589,7 +658,18 @@ def create_model():
 		tree.fit(X_train, y_train)
 		y_pred_class = tree.predict(X_test)
 		print("\n########### Tree classifier ###############")
-		score_arr=evalClassModel(tree, y_test, y_pred_class)
+		eval_tree=ModelEvaluation(tree, y_test, y_pred_class)
+		eval_tree.print_status()
+		eval_tree.setConfusionMatrix()
+		eval_tree.setAccuracyScores()
+		eval_tree.crossValidate()
+		eval_tree.adjustClassificationThreshold()
+		eval_tree.printPredictions()
+		eval_tree.setROCAUCScores()
+		eval_tree.printPredictionStatus()  
+		score_arr=eval_tree.getScoreArr()
+		print("-- ModelEvaluation (Tree) -- ")
+		# score_arr=evalClassModel(tree, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["Tree clas."] = accuracy_score * 100
 		rmse_dict["Tree clas."]=tree
@@ -612,7 +692,18 @@ def create_model():
 		my_forest = forest.fit(X_train, y_train)
 		y_pred_class = my_forest.predict(X_test)
 		print("\n########### Random Forests ###############")
-		score_arr=evalClassModel(my_forest, y_test, y_pred_class)
+		eval_my_forest=ModelEvaluation(my_forest, y_test, y_pred_class)
+		eval_my_forest.print_status()
+		eval_my_forest.setConfusionMatrix()
+		eval_my_forest.setAccuracyScores()
+		eval_my_forest.crossValidate()
+		eval_my_forest.adjustClassificationThreshold()
+		eval_my_forest.printPredictions()
+		eval_my_forest.setROCAUCScores()
+		eval_my_forest.printPredictionStatus()  
+		score_arr=eval_my_forest.getScoreArr()
+		print("-- ModelEvaluation (Forest) -- ")
+     	# score_arr=evalClassModel(my_forest, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["R. Forest"] = accuracy_score * 100
 		rmse_dict["R. Forest"]=my_forest
@@ -625,7 +716,18 @@ def create_model():
 		bag.fit(X_train, y_train)
 		y_pred_class = bag.predict(X_test)
 		print("\n########### Bagging ###############")
-		score_arr=evalClassModel(bag, y_test, y_pred_class)
+		eval_bag=ModelEvaluation(bag, y_test, y_pred_class)
+		eval_bag.print_status()
+		eval_bag.setConfusionMatrix()
+		eval_bag.setAccuracyScores()
+		eval_bag.crossValidate()
+		eval_bag.adjustClassificationThreshold()
+		eval_bag.printPredictions()
+		eval_bag.setROCAUCScores()
+		eval_bag.printPredictionStatus()  
+		score_arr=eval_bag.getScoreArr()
+		print("-- ModelEvaluation (bagging) -- ")
+	#     score_arr=evalClassModel(bag, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["Bagging"] = accuracy_score * 100
 		rmse_dict["Bagging"]=bag
@@ -639,7 +741,18 @@ def create_model():
 		boost.fit(X_train, y_train)
 		y_pred_class = boost.predict(X_test)
 		print("\n########### Boosting ###############")
-		score_arr=evalClassModel(boost, y_test, y_pred_class)
+		eval_boost=ModelEvaluation(boost, y_test, y_pred_class)
+		eval_boost.print_status()
+		eval_boost.setConfusionMatrix()
+		eval_boost.setAccuracyScores()
+		eval_boost.crossValidate()
+		eval_boost.adjustClassificationThreshold()
+		eval_boost.printPredictions()
+		eval_boost.setROCAUCScores()
+		eval_boost.printPredictionStatus()  
+		score_arr=eval_boost.getScoreArr()
+		print("-- ModelEvaluation (Boosting) -- ")
+		#     score_arr=evalClassModel(boost, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["Boosting"] = accuracy_score * 100
 		rmse_dict["Boosting"]=boost
@@ -652,11 +765,29 @@ def create_model():
 		clf2 = RandomForestClassifier(random_state=1)
 		clf3 = GaussianNB()
 		lr = LogisticRegression()
-		stack = StackingClassifier(classifiers=[clf1, clf2, clf3], meta_classifier=lr)
+		
+		estimators = [
+		    ('knn', clf1),
+		    ('rf', clf2),
+		    ('GaussianNB', clf3)
+		]
+		stack = StackingClassifier(estimators=estimators, final_estimator=lr)
+	#     stack = StackingClassifier(classifiers=[clf1, clf2, clf3], meta_classifier=lr)
 		stack.fit(X_train, y_train)
 		y_pred_class = stack.predict(X_test)
 		print("\n########### Stacking ###############")
-		score_arr = evalClassModel(stack, y_test, y_pred_class)
+		eval_stack=ModelEvaluation(stack, y_test, y_pred_class)
+		eval_stack.print_status()
+		eval_stack.setConfusionMatrix()
+		eval_stack.setAccuracyScores()
+		eval_stack.crossValidate()
+		eval_stack.adjustClassificationThreshold()
+		eval_stack.printPredictions()
+		eval_stack.setROCAUCScores()
+		eval_stack.printPredictionStatus()  
+		score_arr=eval_stack.getScoreArr()
+		print("-- ModelEvaluation (Stacking) -- ")
+		#     score_arr = evalClassModel(stack, y_test, y_pred_class)
 		accuracy_score=score_arr[0]
 		method_dict["Stacking"] = accuracy_score * 100
 		rmse_dict["Stacking"]=stack
